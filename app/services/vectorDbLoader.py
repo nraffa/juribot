@@ -72,7 +72,11 @@ langchainsChromaDB = Chroma(
 print("Script finished succesfully after loading documents into the chroma db... ✅")
 
 # test the vector store
-testDoc = langchainsChromaDB.similarity_search(
-    "Que dice el articulo 35 del codigo penal?"
-)
-print(testDoc[0])
+while True:
+    print("Enter a question to search in the vector store:")
+    question = input()
+    if question == "exit":
+        break
+    else:
+        testDoc = langchainsChromaDB.similarity_search(question)
+        print(testDoc[0])
