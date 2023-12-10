@@ -1,5 +1,6 @@
 data
 db
 .env
-raw_data
+raw-data
 .DS_Store
+__pycache__
