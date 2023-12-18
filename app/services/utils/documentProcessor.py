@@ -1,7 +1,6 @@
 from langchain.document_loaders import PyPDFLoader
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-import os
 
 
 def documentProcessor(filePath: str, chunkSize: int, chunkOverlap: int) -> list:
@@ -38,7 +37,7 @@ def documentProcessor(filePath: str, chunkSize: int, chunkOverlap: int) -> list:
         return chunks
     except Exception as e:
         print(e)
-        return None
+        return e
 
 
 def directoryProcessor(directoryPath: str, chunkSize: int, chunkOverlap: int) -> list:
@@ -63,7 +62,7 @@ def directoryProcessor(directoryPath: str, chunkSize: int, chunkOverlap: int) ->
 
     # Load the document
     documentLoader = DirectoryLoader(
-        file_path=directoryPath,
+        path=directoryPath,
         show_progress=True,
         use_multithreading=True,
         loader_cls=PyPDFLoader,
