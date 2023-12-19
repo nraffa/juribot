@@ -2,29 +2,30 @@
 
 Question Answering Bot for legal documents, leveraging from the RAG technology.
 
+
 ## Directory Structure
 
 ```
 .
+├── .gitignore
+├── README.md
 ├── app
 │   ├── main.py
-│   └── services
-│       ├── utils
-│       │   ├── __init__.py
-│       │   └── documentProcessor.py
-│       └── vectorDbLoader.py
-├── notebooks
-│   ├── CSJN-scraper.ipynb
-│   ├── README.md
-│   ├── rag-pipeline-playground.ipynb
-│   └── random.ipynb
-└── .gitignore
+│   ├── models
+│   │   └── chatModels.py
+│   ├── services
+│   │   ├── utils
+│   │   │   ├── __init__.py
+│   │   │   ├── documentProcessor.py
+│   │   │   └── vectorDbLoaderHelper.py
+│   │   ├── ragPipeline.py
+│   │   └── vectorDbLoader.py
+└── notebooks
+    ├── CSJN-scraper.ipynb
+    ├── README.md
+    ├── rag-pipeline-playground.ipynb
+    └── random.ipynb
 ```
-
-
-
-
-
 
 ## Testing the Application
 
