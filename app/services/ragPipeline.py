@@ -12,13 +12,6 @@ load_dotenv()
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
-
-CHAT_HISTORY_SYSTEM_PROMPT = """Given a chat history and the latest user question \
-which might reference the chat history, formulate a standalone question \
-which can be understood without the chat history. Do NOT answer the question, \
-just reformulate it if needed and otherwise return it as is."""
-
-
 ############################################
 
 chromaDatabase = vectorStoreInitializer("localhost", 8000)
