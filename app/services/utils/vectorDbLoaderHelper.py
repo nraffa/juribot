@@ -12,13 +12,15 @@ from tqdm import tqdm
 ## PARAMETERS
 #################################
 
-FILE_PATH = "raw-data/Dune.pdf"
-DIRECTORY_PATH = "/Users/nraffa/projects/juriBot/raw-data/commented-penal-code"
+FILE_PATH = str(input("Enter the path of the document: "))
+DIRECTORY_PATH = str(
+    input("Enter the path of the directory containing the documents: ")
+)
 EMBEDDING_MODEL_NAME = (
     "sentence-transformers/LaBSE"  # agnostic to the language of the text
 )
-COLLECTION_NAME = input(
-    "Enter the name of the chroma db collection: "
+COLLECTION_NAME = str(
+    input("Enter the name of the chroma db collection: ")
 )  # "commented-penal-code"
 
 #################################
