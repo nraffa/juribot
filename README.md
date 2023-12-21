@@ -9,23 +9,26 @@ Question Answering Bot for legal documents, leveraging from the RAG technology.
 .
 ├── .gitignore
 ├── README.md
-├── app
-│   ├── main.py
-│   ├── models
-│   │   └── chatModels.py
-│   ├── services
-│   │   ├── utils
-│   │   │   ├── __init__.py
-│   │   │   ├── documentProcessor.py
-│   │   │   └── vectorDbLoaderHelper.py
-│   │   ├── ragPipeline.py
-│   │   └── vectorDbLoader.py
-└── notebooks
-    ├── CSJN-scraper.ipynb
-    ├── README.md
-    ├── rag-pipeline-playground.ipynb
-    └── random.ipynb
+├── backend
+│   ├── app
+│   │   ├── main.py
+│   │   ├── models
+│   │   │   └── chatModels.py
+│   │   ├── services
+│   │   │   ├── ragPipeline.py
+│   │   │   ├── utils
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── documentProcessor.py
+│   │   │   │   └── vectorDbLoaderHelper.py
+│   │   │   └── vectorDbLoader.py
+│   ├── scrapers
+│   │   └── CSJN-scraper.ipynb
+│   └── test
+│       └── testCollection.py
+└── frontend
+    └── streamlitPrototype.py
 ```
+
 
 ## Testing the Application
 
@@ -75,9 +78,15 @@ print(response.text)
 
 To continue the conversation, update the `message` and `chat_history` in the `data` dictionary and send another request.
 
-## Notebooks
+## Unit Testing
 
-The `notebooks` directory contains Jupyter notebooks for data exploration and testing.
+Unit tests for the application are located in the `backend/test` directory. The main test file is [`testCollection.py`](backend/test/testCollection.py).
+
+To run the tests, navigate to the `backend` directory and execute the following command:
+
+```sh
+python -m unittest test/testCollection.py
+```
 
 ## Contributing
 
