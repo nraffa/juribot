@@ -1,17 +1,11 @@
 import streamlit as st
 import requests
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
-# def get_stream(url, data):
-#     s = requests.Session()
-
-#     with s.post(url, json=data, stream=True) as resp:
-#         for line in resp.iter_lines():
-#             if line:
-#                 return line
-
-
-url = "http://127.0.0.1:8000/chain"
+url = os.getenv("API_URL")
 
 
 st.title("JuriBot")
@@ -29,6 +23,9 @@ for message in st.session_state.messages:
 if prompt := st.chat_input("What is up?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
     data = {
         "message": prompt,
         "chat_history": "",
@@ -36,12 +33,9 @@ if prompt := st.chat_input("What is up?"):
 
     response = requests.post(url, json=data)
 
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         full_response = response.text  # get_stream(url, data)
-
         message_placeholder.markdown(full_response)
+
     st.session_state.messages.append({"role": "assistant", "content": full_response})
