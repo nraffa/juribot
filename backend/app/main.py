@@ -20,10 +20,10 @@ app.add_middleware(
 
 
 @app.post("/chain")
-async def _chain(request: ChainRequest):
+def _chain(request: ChainRequest):
     request.chat_history = chat_history
     gen = chainThread(request.message, request.chat_history)
-    return StreamingResponse(gen, media_type="text/plain")
+    return StreamingResponse(gen, media_type="text/event-stream")
 
 
 # while True:

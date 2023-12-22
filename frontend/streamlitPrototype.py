@@ -2,9 +2,11 @@ import streamlit as st
 import requests
 from dotenv import load_dotenv
 import os
+import codecs
 
 load_dotenv()
 
+# url = "http://jsonplaceholder.typicode.com/todos"
 url = os.getenv("API_URL")
 
 
@@ -31,11 +33,26 @@ if prompt := st.chat_input("What is up?"):
         "chat_history": "",
     }
 
-    response = requests.post(url, json=data)
+    full_response = ""
 
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
-        full_response = response.text  # get_stream(url, data)
-        message_placeholder.markdown(full_response)
+        with requests.post(
+            url,
+            json=data,
+            stream=True,
+        ) as response:
+            incomplete_chunk = b""
+            for chunk in response.iter_content():
+                try:
+                    line = (incomplete_chunk + chunk).decode("utf-8")
+                    incomplete_chunk = b""
+                except UnicodeDecodeError:
+                    incomplete_chunk += chunk
+                    continue
+
+                full_response += line
+
+                message_placeholder.markdown(full_response)
 
     st.session_state.messages.append({"role": "assistant", "content": full_response})

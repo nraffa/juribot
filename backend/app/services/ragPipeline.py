@@ -52,7 +52,8 @@ def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
     chatHistorySystemPrompt = """Given a chat history and the latest user question \
     which might reference the chat history, formulate a standalone question \
     which can be understood without the chat history. Do NOT answer the question, \
-    just reformulate it if needed and otherwise return it as is."""
+    just reformulate it if needed and otherwise return it as is.
+    """
 
     condenseChatHistoryPromptObj = ChatPromptTemplate.from_messages(
         [
@@ -69,7 +70,9 @@ def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
 
     qaSystemPrompt = """Use the following pieces of context to answer the question at the end.
     If you don't know the answer, just say that you don't know, don't try to make up an answer.
-    Use three sentences maximum and keep the answer as concise as possible. When giving an answer ALWAYS say where you found the answer (DOCUMENT and PAGE found in the metadata).
+    Use three sentences maximum and keep the answer as concise as possible. 
+    When giving an answer ALWAYS say where you found the answer (DOCUMENT and PAGE found in the metadata).
+    {chat_history}
     {context}"""
 
     qaPromptObj = ChatPromptTemplate.from_messages(
@@ -80,15 +83,15 @@ def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
         ]
     )
 
-    # ragPromptCustom = PromptTemplate.from_template(template=template) # this would be the same as the qaPromptObj from above
-
     ##########################################
 
     def condense_question(input: dict):
-        if input.get("chat_history"):
-            return condenseChatHistoryChain
-        else:
-            return input["question"]
+        # it seems this part is the one that generates double response
+        # but if i take it out it dosn't know about the chat history
+        # if input.get("chat_history"):
+        #     return condenseChatHistoryChain
+        # else:
+        return input["question"]
 
     ragChain = (
         RunnablePassthrough.assign(context=condense_question | retriever)
