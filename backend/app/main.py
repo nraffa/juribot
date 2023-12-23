@@ -24,13 +24,3 @@ def _chain(request: ChainRequest):
     request.chat_history = chat_history
     gen = chainThread(request.message, request.chat_history)
     return StreamingResponse(gen, media_type="text/event-stream")
-
-
-# while True:
-#     question = input("\nQuestion: ")
-
-#     if question == "exit":
-#         break
-
-#     for chunk in chainThread(question, chat_history):
-#         print(chunk, end="", flush=True)

@@ -87,7 +87,7 @@ def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
 
     def condense_question(input: dict):
         # it seems this part is the one that generates double response
-        # but if i take it out it dosn't know about the chat history
+        # but if i take it out it doesn't know about the chat history
         # if input.get("chat_history"):
         #     return condenseChatHistoryChain
         # else:
@@ -98,26 +98,5 @@ def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
         | qaPromptObj
         | llm
     )
-
-    ## Adding the source of the retrieved information to the prompt (as i don't want the metadata objects is not necessary,
-    # the llm should already give it back in the response as it is specified in the qa system prompt)
-    ##########################################
-
-    # ragChainUsingDocumentsAsContext = (
-    #     {
-    #         "context": lambda input: input["documents"],
-    #         "question": itemgetter("question"),
-    #     }
-    #     | ragPromptCustom
-    #     | llm
-    #     | StrOutputParser()
-    # )
-
-    # ragChainWithSource = RunnableParallel(
-    #     {"documents": retriever, "question": RunnablePassthrough()}
-    # ) | {
-    #     "documents": lambda input: [doc.metadata for doc in input["documents"]],
-    #     "answer": ragChainUsingDocumentsAsContext,
-    # }
 
     return ragChain
