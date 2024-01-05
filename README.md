@@ -34,9 +34,16 @@ Question Answering Bot for legal documents, leveraging from the RAG technology.
 
 ### Setup: Loading documents into the Chroma Vectordatabase
 
-Before starting the script, make sure the Chroma DB container is running:
+Make sure to add the following change to the docker compose file in the chroma db repo within the environment variables: 
+
+```
+- ALLOW_RESET=TRUE
+```
+
+Before loading the documents to the DB, make sure the Chroma DB container is running:
 
 - start your docker deamon and then run the following commands:
+
 ```sh
 cd chroma
 docker-compose up -d --build
