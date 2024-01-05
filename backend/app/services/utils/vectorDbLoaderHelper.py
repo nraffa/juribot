@@ -12,16 +12,10 @@ from tqdm import tqdm
 ## PARAMETERS
 #################################
 
-FILE_PATH = str(input("Enter the path of the document: "))
-DIRECTORY_PATH = str(
-    input("Enter the path of the directory containing the documents: ")
-)
 EMBEDDING_MODEL_NAME = (
     "sentence-transformers/LaBSE"  # agnostic to the language of the text
 )
-COLLECTION_NAME = str(
-    input("Enter the name of the chroma db collection: ")
-)  # "commented-penal-code"
+COLLECTION_NAME = "penalcode"
 
 #################################
 
@@ -59,6 +53,11 @@ def vectorStoreLoader(host: str, port: int, directory: bool = False):
     # resetting the db
     chromaClient.reset()
     print("WARNING: DB reset... ❗️")
+
+    FILE_PATH = str(input("Enter the path of the document: "))
+    DIRECTORY_PATH = str(
+        input("Enter the path of the directory containing the documents: ")
+    )
 
     if directory:
         # load and split the document/s into chunks
