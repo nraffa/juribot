@@ -36,7 +36,9 @@ Question Answering Bot for legal documents, leveraging from the RAG technology.
 
 Before starting the script, make sure the Chroma DB container is running:
 
+- start your docker deamon and then run the following commands:
 ```sh
+cd chroma
 docker-compose up -d --build
 ```
 
@@ -47,6 +49,7 @@ Process the document you want to add to the rag pipeline
 To load and split documents into chunks, run the `vectorDbLoader.py` script:
 
 ```sh
+cd backend
 python app/services/vectorDbLoader.py
 ```
 
@@ -54,9 +57,10 @@ This script loads a document from the specified file path, splits it into chunks
 
 ### Run the backend
 
-Execute the command: 
+Execute the commands: 
 
 ```
+cd app
 uvicorn main:app --reload
 ```
 
