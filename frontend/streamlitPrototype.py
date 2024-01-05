@@ -10,7 +10,7 @@ load_dotenv()
 url = os.getenv("API_URL")
 
 
-st.title("JuriBot")
+st.title("Brujula Legal")
 
 # Initialize chat history
 if "messages" not in st.session_state:
