@@ -1,0 +1,55 @@
+version: '3.10'
+services:
+  chroma-db:
+    image: server
+    build:
+      context: ./chroma
+      dockerfile: Dockerfile
+    volumes:
+      - chroma-data:/chroma/chroma
+    command: uvicorn chromadb.app:app --reload --workers 1 --host 0.0.0.0 --port 8000 --log-config chromadb/log_config.yml --timeout-keep-alive 30
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ALLOW_RESET=TRUE
+      - CHROMA_SERVER_AUTH_PROVIDER=${CHROMA_SERVER_AUTH_PROVIDER}
+      - CHROMA_SERVER_AUTH_CREDENTIALS_FILE=${CHROMA_SERVER_AUTH_CREDENTIALS_FILE}
+      - CHROMA_SERVER_AUTH_CREDENTIALS=${CHROMA_SERVER_AUTH_CREDENTIALS}
+      - CHROMA_SERVER_AUTH_CREDENTIALS_PROVIDER=${CHROMA_SERVER_AUTH_CREDENTIALS_PROVIDER}
+      - PERSIST_DIRECTORY=${PERSIST_DIRECTORY:-/chroma/chroma}
+      - CHROMA_OTEL_EXPORTER_ENDPOINT=${CHROMA_OTEL_EXPORTER_ENDPOINT}
+      - CHROMA_OTEL_EXPORTER_HEADERS=${CHROMA_OTEL_EXPORTER_HEADERS}
+      - CHROMA_OTEL_SERVICE_NAME=${CHROMA_OTEL_SERVICE_NAME}
+      - CHROMA_OTEL_GRANULARITY=${CHROMA_OTEL_GRANULARITY}
+      - CHROMA_SERVER_NOFILE=${CHROMA_SERVER_NOFILE}
+    ports:
+      - 8000:8000
+    networks:
+      - app-network
+  frontend:
+    build: ./frontend
+    command: streamlit run streamlitPrototype.py --server.port=8501 --server.address=0.0.0.0
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 8501:8501
+    networks:
+      - app-network
+  backend:
+    build: ./backend
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    # environment:
+    #   - HUGGINGFACE_HUB_CACHE=/app/tmp/sentence-transformers
+    volumes:
+      - ./backend:/app
+    ports:
+      - 5000:5000
+    networks:
+      - app-network
+
+volumes:
+  chroma-data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge

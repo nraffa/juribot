@@ -12,6 +12,11 @@ from tqdm import tqdm
 ## PARAMETERS
 #################################
 
+import os
+
+os.environ["TRANSFORMERS_CACHE"] = "/app/app/torch/"
+os.environ["HF_HOME"] = "/app/app/torch/"
+
 EMBEDDING_MODEL_NAME = (
     "sentence-transformers/LaBSE"  # agnostic to the language of the text
 )
