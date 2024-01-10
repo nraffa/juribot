@@ -3,7 +3,7 @@
 import chromadb
 from chromadb.config import Settings
 from langchain.vectorstores import Chroma
-from services.utils.documentProcessor import documentProcessor, directoryProcessor
+from utils.documentProcessor import documentProcessor, directoryProcessor
 from chromadb.utils import embedding_functions
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 import uuid
@@ -11,11 +11,6 @@ from tqdm import tqdm
 
 ## PARAMETERS
 #################################
-
-import os
-
-os.environ["TRANSFORMERS_CACHE"] = "/app/app/torch/"
-os.environ["HF_HOME"] = "/app/app/torch/"
 
 EMBEDDING_MODEL_NAME = (
     "sentence-transformers/LaBSE"  # agnostic to the language of the text
@@ -115,45 +110,5 @@ def vectorStoreLoader(host: str, port: int, directory: bool = False):
     )
 
     print("Script finished succesfully after loading documents into the chroma db... ✅")
-
-    return langchainsChromaDB
-
-
-# function for starting the chroma db for when the collection already exists
-def vectorStoreInitializer(host: str, port: int):
-    """
-    Initializes a Chroma DB client and returns a LangChain Chroma DB instance.
-
-    This function initializes a Chroma DB client with a specified host and port. The settings allow the database to be reset.
-
-    An embedding function is initialized using the SentenceTransformerEmbeddings from the sentence-transformers library with the LaBSE model.
-
-    A LangChain Chroma DB instance is created using the Chroma DB client, a predefined collection name, and the embedding function.
-
-    Parameters:
-    host (str): The host address of the Chroma DB.
-    port (int): The port number of the Chroma DB.
-
-    Returns:
-    Chroma: A LangChain Chroma DB instance that can be used for further processing of the documents.
-    """
-    # initialize the chroma client
-    chromaClient = chromadb.HttpClient(
-        host=host, port=port, settings=Settings(allow_reset=True)
-    )
-
-    # initialize the embedding function, this time for langchain wrapper
-    langchainEmbeddingFunction = SentenceTransformerEmbeddings(
-        model_name="sentence-transformers/LaBSE"
-    )
-
-    # tell LangChain to use our client and collection name
-    langchainsChromaDB = Chroma(
-        client=chromaClient,
-        collection_name=COLLECTION_NAME,
-        embedding_function=langchainEmbeddingFunction,
-    )
-
-    print("Successfully initialized chroma db... ✅")
 
     return langchainsChromaDB

@@ -1,4 +1,4 @@
-from utils.vectorDbLoaderHelper import vectorStoreLoader
+from utils.dbLoaderHelper import vectorStoreLoader
 
 LOADING_DIRECTORY = input("Do you want to load a directory? (y/n): ")
 

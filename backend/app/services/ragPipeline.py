@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.schema import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
-from services.utils.vectorDbLoaderHelper import vectorStoreInitializer
+from services.utils.dbInitializer import vectorStoreInitializer
 import os
 
 load_dotenv()
