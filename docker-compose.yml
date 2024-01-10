@@ -37,10 +37,9 @@ services:
   backend:
     build: ./backend
     command: uvicorn main:app --host 0.0.0.0 --port 8000
-    # environment:
-    #   - HUGGINGFACE_HUB_CACHE=/app/tmp/sentence-transformers
     volumes:
       - ./backend:/app
+      #- .cache:/app/.cache:ro
     ports:
       - 5000:5000
     networks:

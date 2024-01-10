@@ -26,9 +26,7 @@ WORKDIR /usr/app
 COPY --chown=python:python --from=build /usr/app/venv ./venv
 # Copy the current directory contents into the container
 COPY --chown=python:python ./app .
-
-# create the tmp folder necessary for storing the sentence transformer model
-RUN mkdir -p /app/app/torch && chown -R 999:999 /app/app/torch
+COPY --chown=python:python .cache .
 
 USER 999
 

@@ -3,7 +3,7 @@
 import chromadb
 from chromadb.config import Settings
 from langchain.vectorstores import Chroma
-from utils.documentProcessor import documentProcessor, directoryProcessor
+from services.utils.documentProcessor import documentProcessor, directoryProcessor
 from chromadb.utils import embedding_functions
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 import uuid
