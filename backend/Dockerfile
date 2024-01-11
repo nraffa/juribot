@@ -26,7 +26,7 @@ WORKDIR /usr/app
 COPY --chown=python:python --from=build /usr/app/venv ./venv
 # Copy the current directory contents into the container
 COPY --chown=python:python ./app .
-COPY --chown=python:python .cache .
+COPY --chown=python:python .cache ./.cache
 
 USER 999
 
@@ -37,5 +37,4 @@ ENV PATH="/usr/app/venv/bin:$PATH"
 EXPOSE 5000
 
 # Run app.py when the container launches
-#CMD [ "uvicorn", "main:app", "--reload" ]
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "5000"]

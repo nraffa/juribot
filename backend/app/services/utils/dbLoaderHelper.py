@@ -8,6 +8,7 @@ from chromadb.utils import embedding_functions
 from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 import uuid
 from tqdm import tqdm
+import os
 
 ## PARAMETERS
 #################################
@@ -16,6 +17,10 @@ EMBEDDING_MODEL_NAME = (
     "sentence-transformers/LaBSE"  # agnostic to the language of the text
 )
 COLLECTION_NAME = "penalcode"
+
+# this is so when dockerizing the app, our labse for embeddings model goes to the cache folder set up by us
+# if not, the folder would be found outside the app directory and our app wouldn't have permission privileges
+os.environ["SENTENCE_TRANSFORMERS_HOME"] = "/usr/app/.cache"
 
 #################################
 
@@ -54,12 +59,10 @@ def vectorStoreLoader(host: str, port: int, directory: bool = False):
     chromaClient.reset()
     print("WARNING: DB reset... ❗️")
 
-    FILE_PATH = str(input("Enter the path of the document: "))
-    DIRECTORY_PATH = str(
-        input("Enter the path of the directory containing the documents: ")
-    )
-
     if directory:
+        DIRECTORY_PATH = str(
+            input("Enter the path of the directory containing the documents: ")
+        )
         # load and split the document/s into chunks
         chunks = directoryProcessor(
             directoryPath=DIRECTORY_PATH, chunkSize=700, chunkOverlap=0
@@ -68,6 +71,8 @@ def vectorStoreLoader(host: str, port: int, directory: bool = False):
         print(f"Number of chunks: {len(chunks)}")
     else:
         # load and split the document/s into chunks
+        FILE_PATH = str(input("Enter the path of the document: "))
+
         chunks = documentProcessor(filePath=FILE_PATH, chunkSize=700, chunkOverlap=0)
         print("Document/s loaded and split into chunks... ✅")
         print(f"Number of chunks: {len(chunks)}")

@@ -36,10 +36,9 @@ services:
       - app-network
   backend:
     build: ./backend
-    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    command: uvicorn main:app --host 0.0.0.0 --port 5000
     volumes:
       - ./backend:/app
-      #- .cache:/app/.cache:ro
     ports:
       - 5000:5000
     networks:
