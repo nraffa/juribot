@@ -14,7 +14,7 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 ############################################
 
-chromaDatabase = vectorStoreInitializer("chroma-db", 8000)
+chromaDatabase = vectorStoreInitializer("localhost", 8000)
 
 chat_history = []
 

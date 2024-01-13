@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 import os
 
-os.environ["HF_HOME"] = "/app/.cache/torch/"
+os.environ["HF_HOME"] = "/app/.cache/"
 
 
 # function for processing and loading the chunks into the chroma db for the first time

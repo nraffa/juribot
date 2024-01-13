@@ -6,7 +6,6 @@ import codecs
 
 load_dotenv()
 
-# url = "http://jsonplaceholder.typicode.com/todos"
 url = os.getenv("API_URL")
 
 
