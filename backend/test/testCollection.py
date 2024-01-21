@@ -12,7 +12,7 @@ def checkCollection():
     )  # "commented-penal-code"
 
     client = chromadb.HttpClient(
-        host="localhost", port=8000, settings=Settings(allow_reset=True)
+        host="chroma-db", port=8000, settings=Settings(allow_reset=True)
     )
 
     chromaClientEmbeddingFunction = (
