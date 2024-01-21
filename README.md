@@ -9,26 +9,68 @@ Question Answering Bot for legal documents, leveraging from the RAG technology.
 .
 ├── .gitignore
 ├── README.md
-├── backend
-│   ├── app
-│   │   ├── main.py
-│   │   ├── models
-│   │   │   └── chatModels.py
-│   │   ├── services
-│   │   │   ├── ragPipeline.py
-│   │   │   ├── utils
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── documentProcessor.py
-│   │   │   │   └── vectorDbLoaderHelper.py
-│   │   │   └── vectorDbLoader.py
-│   ├── scrapers
-│   │   └── CSJN-scraper.ipynb
-│   └── test
-│       └── testCollection.py
-└── frontend
-    └── streamlitPrototype.py
+├── docker-compose.yml
+├── backend/
+│   ├── .cache/
+│   ├── Dockerfile
+│   ├── app/
+│   ├── requirements.txt
+│   ├── scrapers/
+│   ├── test/
+│   └── .env
+├── chroma/
+│   └── ...
+└── frontend/
+    ├── Dockerfile
+    ├── streamlitPrototype.py
+    ├── requirements.txt
+    └── .env
 ```
 
+
+
+
+## Installation
+
+This project uses Docker Compose to manage its services. To get started, you'll need to have Docker installed on your machine.
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/nraffa/juribot.git
+```
+
+2. Navigate to the project directory:
+
+```bash
+cd juribot
+```
+
+3. Create environment files for the backend and frontend services:
+
+
+For the backend, create a `.env` file in the `backend/` directory with the following variables:
+
+```bash
+# backend/.env
+OPENAI_API_KEY={API_SECRET}
+```
+
+For the frontend, create a `.env` file in the `frontend/` directory with the following variables:
+
+```bash
+# frontend/.env
+API_URL='http://backend:5000/chain'
+```
+
+4. Build and start the Docker services 
+
+```bash
+docker-compose up --build
+```
+
+## Usage
+Once the Docker services are up and running, you can access the application at http://localhost:8501 .
 
 ## Testing the Application
 
@@ -62,16 +104,7 @@ python app/services/vectorDbLoader.py
 
 This script loads a document from the specified file path, splits it into chunks, and stores the chunks in the Chroma DB.
 
-### Run the backend
-
-Execute the commands: 
-
-```
-cd app
-uvicorn main:app --reload
-```
-
-### Making requests to the API
+### Making requests directly to the API
 
 You can test the application by sending POST requests to the `/chain` endpoint. Here's an example Python script to test the application:
 
