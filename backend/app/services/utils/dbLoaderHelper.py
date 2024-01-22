@@ -26,7 +26,11 @@ os.environ["SENTENCE_TRANSFORMERS_HOME"] = "/usr/app/.cache"
 
 
 # function for processing and loading the chunks into the chroma db for the first time
-def vectorStoreLoader(host: str, port: int, directory: bool = False):
+def vectorStoreLoader(
+    host: str,
+    port: int,
+    path: str = None,
+):
     """
     Loads documents into a Chroma DB collection and returns a LangChain Chroma DB instance.
 
@@ -43,6 +47,8 @@ def vectorStoreLoader(host: str, port: int, directory: bool = False):
     Parameters:
     host (str): The host address of the Chroma DB.
     port (int): The port number of the Chroma DB.
+    directory (bool): A boolean value indicating whether the input is a directory or not.
+    path (str): The path of the file to be loaded into the Chroma DB.
 
     Returns:
     Chroma: A LangChain Chroma DB instance that can be used for further processing of the documents.
@@ -59,23 +65,22 @@ def vectorStoreLoader(host: str, port: int, directory: bool = False):
     chromaClient.reset()
     print("WARNING: DB reset... ❗️")
 
-    if directory:
-        DIRECTORY_PATH = str(
-            input("Enter the path of the directory containing the documents: ")
-        )
-        # load and split the document/s into chunks
-        chunks = directoryProcessor(
-            directoryPath=DIRECTORY_PATH, chunkSize=700, chunkOverlap=0
-        )
-        print("Documents in folder has been loaded and split into chunks... ✅")
-        print(f"Number of chunks: {len(chunks)}")
-    else:
-        # load and split the document/s into chunks
-        FILE_PATH = str(input("Enter the path of the document: "))
+    # if directory:
+    #     DIRECTORY_PATH = str(
+    #         input("Enter the path of the directory containing the documents: ")
+    #     )
+    #     # load and split the document/s into chunks
+    #     chunks = directoryProcessor(
+    #         directoryPath=DIRECTORY_PATH, chunkSize=700, chunkOverlap=0
+    #     )
+    #     print("Documents in folder has been loaded and split into chunks... ✅")
+    #     print(f"Number of chunks: {len(chunks)}")
+    # else:
+    # load and split the document/s into chunks
 
-        chunks = documentProcessor(filePath=FILE_PATH, chunkSize=700, chunkOverlap=0)
-        print("Document/s loaded and split into chunks... ✅")
-        print(f"Number of chunks: {len(chunks)}")
+    chunks = documentProcessor(filePath=path, chunkSize=700, chunkOverlap=0)
+    print("Document/s loaded and split into chunks... ✅")
+    print(f"Number of chunks: {len(chunks)}")
 
     # initialize the embedding function for chroma client
     chromaClientEmbeddingFunction = (
