@@ -65,6 +65,8 @@ def vectorStoreLoader(
     chromaClient.reset()
     print("WARNING: DB reset... ❗️")
 
+    # TODO add option for directory processing
+
     # if directory:
     #     DIRECTORY_PATH = str(
     #         input("Enter the path of the directory containing the documents: ")

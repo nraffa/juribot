@@ -1,10 +1,11 @@
 from fastapi import FastAPI, UploadFile
 from fastapi.responses import StreamingResponse
+from services.utils.dbLoaderHelper import vectorStoreLoader
 from models.chatModels import chainThread, ChainRequest
-from models.documentUploadModels import DocumentUploadRequest
 from fastapi.middleware.cors import CORSMiddleware
-from .services.dbLoader import vectorStoreLoader
-from .services.utils.filesHandling import tmpFileCreator
+
+
+# from .services.utils.filesHandling import tmpFileCreator
 
 chat_history = []
 
@@ -30,16 +31,13 @@ def _chain(request: ChainRequest):
 
 
 @app.post("/upload")
-async def _upload(file: UploadFile):  # DocumentUploadRequest):
-    # get the file name from the request
-    path = file.filename
+async def _upload(file: UploadFile):
+    # Save the uploaded PDF file to a desired location
+    with open(file.filename, "wb") as f:
+        f.write(await file.read())
 
-    # # get the file name from the request
-    # path = request.fileName
-    # file = request.file
-
-    # tmpFileName = await tmpFileCreator(file)
-
-    vectorStoreLoader("chroma-db", 8000, path=path)
-
-    return {"message": "Document uploaded successfully!"}
+    try:
+        vectorStoreLoader("chroma-db", 8000, path=file.filename)  # chroma-db
+        return {"message": "Successfully uploaded the document to the database."}
+    except Exception as e:
+        return {"error": str(e)}

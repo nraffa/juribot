@@ -13,31 +13,35 @@ st.title("Brujula Legal")
 
 uploadedFile = st.file_uploader("Choose a file", type="pdf")
 
+# the button is necessary so that the code below is not executed every time the user interacts with the app
+# it seems the app get's refreshed every time the user interacts with it...
+if st.button("Upload document to DB"):
+    with st.sidebar:
+        st.title("PDF Viewer")
+        if uploadedFile is not None:
+            # Create a temporary file and write the stream to it
+            with st.spinner("Loading..."):
+                tmpFileName = tmpFileCreator(uploadedFile)
 
-with st.sidebar:
-    st.title("PDF Viewer")
-    if uploadedFile is not None:
-        # Create a temporary file and write the stream to it
-        with st.spinner("Loading..."):
-            tmpFileName = tmpFileCreator(uploadedFile)
+                # Generate the iframe
+                iframe = showPdf(tmpFileName)
 
-            # Generate the iframe
-            iframe = showPdf(tmpFileName)
+            # Show the pdf
+            st.markdown(iframe, unsafe_allow_html=True)
 
-        # Show the pdf
-        st.markdown(iframe, unsafe_allow_html=True)
+    with st.spinner("Loading documents into the database..."):
+        # here call the post request to api for uploading the document
+        if uploadedFile is not None:
+            fileContent = uploadedFile.read()
 
-with st.spinner("Loading documents into the database..."):
-    # here call the post request to api for uploading the document
-    if uploadedFile is not None:
-        with open(tmpFileName, "rb") as f:
-            fileContent = f.read()
+            files = {"file": ("filename", fileContent)}
 
-        files = {"file": ("filename", fileContent)}
+            uploadResponse = requests.post(url + "/upload", files=files)
 
-        response = requests.post(url + "/upload", files=files)
-
-        st.success(response.json()["message"])
+            try:
+                st.success(uploadResponse.json()["message"])
+            except:
+                st.error(f"Eror uploading file: {uploadResponse.json()}")
 
 # Initialize chat history
 if "messages" not in st.session_state:
