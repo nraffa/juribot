@@ -132,6 +132,14 @@ def vectorStoreInitializer(host: str, port: int):
         host=host, port=port, settings=Settings(allow_reset=True)
     )
 
+    # Get the collection
+    if COLLECTION_NAME not in chromaClient.list_collections():
+        print('The collection "{}" was not found.'.format(COLLECTION_NAME))
+        # If the collection doesn't exist, create it (es esto! porque inicia la db antes de que se suba el doc!!!)
+        # get a collection or create if it doesn't exist already
+        collection = chromaClient.get_or_create_collection(COLLECTION_NAME)
+        # chromaClient.create_collection(COLLECTION_NAME)
+
     # initialize the embedding function, this time for langchain wrapper
     langchainEmbeddingFunction = SentenceTransformerEmbeddings(
         model_name="sentence-transformers/LaBSE"

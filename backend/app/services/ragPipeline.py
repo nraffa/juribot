@@ -42,6 +42,10 @@ def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
     RunnableParallel: A RAG chain that can be used to retrieve documents and generate answers to questions.
     """
 
+    chromaDatabase = vectorStoreInitializer(
+        "chroma-db", 8000
+    )  # TODO: remove this, it's just for testing if the issue is because the chain doesn't update the collection after the first time
+
     retriever = chromaDatabase.as_retriever(
         search_type=searchType, search_kwargs={"k": numberOfResultsInSearch}
     )

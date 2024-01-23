@@ -3,6 +3,7 @@ from fastapi.responses import StreamingResponse
 from services.utils.dbLoaderHelper import vectorStoreLoader
 from models.chatModels import chainThread, ChainRequest
 from fastapi.middleware.cors import CORSMiddleware
+from services.utils.dbInitializer import vectorStoreInitializer
 
 
 # from .services.utils.filesHandling import tmpFileCreator
