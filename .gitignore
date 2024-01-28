@@ -4,4 +4,4 @@ db
 raw-data
 .DS_Store
 __pycache__
-notebooks
+playground

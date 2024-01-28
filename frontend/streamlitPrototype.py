@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 from dotenv import load_dotenv
 import os
-import codecs
+from utils.pdfViewer import tmpFileCreator, showPdf
 
 load_dotenv()
 
@@ -10,6 +10,38 @@ url = os.getenv("API_URL")
 
 
 st.title("Brujula Legal")
+
+uploadedFile = st.file_uploader("Choose a file", type="pdf")
+
+# the button is necessary so that the code below is not executed every time the user interacts with the app
+# it seems the app get's refreshed every time the user interacts with it...
+if st.button("Upload document to DB"):
+    with st.sidebar:
+        st.title("PDF Viewer")
+        if uploadedFile is not None:
+            # Create a temporary file and write the stream to it
+            with st.spinner("Loading..."):
+                tmpFileName = tmpFileCreator(uploadedFile)
+
+                # Generate the iframe
+                iframe = showPdf(tmpFileName)
+
+            # Show the pdf
+            st.markdown(iframe, unsafe_allow_html=True)
+
+    with st.spinner("Loading documents into the database..."):
+        # here call the post request to api for uploading the document
+        if uploadedFile is not None:
+            fileContent = uploadedFile.read()
+
+            files = {"file": ("filename", fileContent)}
+
+            uploadResponse = requests.post(url + "/upload", files=files)
+
+            try:
+                st.success(uploadResponse.json()["message"])
+            except:
+                st.error(f"Eror uploading file: {uploadResponse.json()}")
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -19,7 +51,6 @@ if "messages" not in st.session_state:
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-
 
 if prompt := st.chat_input("What is up?"):
     st.session_state.messages.append({"role": "user", "content": prompt})
@@ -37,7 +68,7 @@ if prompt := st.chat_input("What is up?"):
     with st.chat_message("assistant"):
         message_placeholder = st.empty()
         with requests.post(
-            url,
+            url + "/chain",
             json=data,
             stream=True,
         ) as response:

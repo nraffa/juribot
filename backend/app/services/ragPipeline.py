@@ -14,12 +14,12 @@ os.environ["TOKENIZERS_PARALLELISM"] = "false"
 
 ############################################
 
-chromaDatabase = vectorStoreInitializer("chroma-db", 8000)
+CHROMADATABASE = vectorStoreInitializer("chroma-db", 8000)  # chroma-db
 
 chat_history = []
 
 
-def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
+def ragChainInitializer(llm, searchType, numberOfResultsInSearch, db=CHROMADATABASE):
     """
     Initializes a RAG (Retrieval-Augmented Generation) chain for document retrieval and question answering.
 
@@ -42,9 +42,10 @@ def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
     RunnableParallel: A RAG chain that can be used to retrieve documents and generate answers to questions.
     """
 
-    retriever = chromaDatabase.as_retriever(
-        search_type=searchType, search_kwargs={"k": numberOfResultsInSearch}
-    )
+    if db is not None:
+        retriever = db.as_retriever(
+            search_type=searchType, search_kwargs={"k": numberOfResultsInSearch}
+        )
 
     ## Defining the chat history chain
     ##########################################
@@ -93,10 +94,15 @@ def ragChainInitializer(llm, searchType, numberOfResultsInSearch):
         # else:
         return input["question"]
 
-    ragChain = (
-        RunnablePassthrough.assign(context=condense_question | retriever)
-        | qaPromptObj
-        | llm
-    )
+    if db is not None:
+        ragChain = (
+            RunnablePassthrough.assign(context=condense_question | retriever)
+            | qaPromptObj
+            | llm
+        )
+    else:
+        ragChain = (
+            RunnablePassthrough.assign(context=condense_question) | qaPromptObj | llm
+        )
 
     return ragChain

@@ -6,6 +6,7 @@ from langchain.callbacks.manager import AsyncCallbackManager
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel
 from services.ragPipeline import ragChainInitializer
+from services.utils.dbInitializer import vectorStoreInitializer
 
 
 ## PARAMETERS
@@ -47,7 +48,7 @@ class ChainStreamHandler(StreamingStdOutCallbackHandler):
         self.gen.send(token)
 
 
-def llm_thread(g, prompt, chat_history):
+def llm_thread(g, prompt, chat_history, db):
     try:
         llm = ChatOpenAI(
             model="gpt-3.5-turbo",
@@ -56,20 +57,25 @@ def llm_thread(g, prompt, chat_history):
             streaming=True,
             callback_manager=AsyncCallbackManager([ChainStreamHandler(g)]),
         )
-        ragChain = ragChainInitializer(llm, SEARCH_TYPE, NUMBER_OF_RESULTS_IN_SEARCH)
 
+        # try:
+        ragChain = ragChainInitializer(
+            llm, SEARCH_TYPE, NUMBER_OF_RESULTS_IN_SEARCH, db=db
+        )
         ai_msg = ragChain.invoke({"question": prompt, "chat_history": chat_history})
+
         # TODO this should be handled from the frontend part later
         # (as at first it will be saved temporarily in the local client storage)
         chat_history.extend([HumanMessage(content=prompt), ai_msg])
+        print("chat_history: ", chat_history)
 
     finally:
         g.close()
 
 
-def chainThread(prompt, chat_history):
+def chainThread(prompt, chat_history, db):
     g = ThreadedGenerator()
-    threading.Thread(target=llm_thread, args=(g, prompt, chat_history)).start()
+    threading.Thread(target=llm_thread, args=(g, prompt, chat_history, db)).start()
     return g
 
 
