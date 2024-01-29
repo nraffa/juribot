@@ -122,6 +122,8 @@ print(response.text)
 
 To continue the conversation, update the `message` and `chat_history` in the `data` dictionary and send another request.
 
+Another alternative is accessing the `Swagger Ui` endpoint in the hosting url for example: `http://127.0.0.1:8000/docs` and use the UI for playing around with the API.
+
 ## Unit Testing
 
 Unit tests for the application are located in the `backend/test` directory. The main test file is [`testCollection.py`](backend/test/testCollection.py).

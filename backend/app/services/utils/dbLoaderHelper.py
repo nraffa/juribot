@@ -9,6 +9,9 @@ from langchain.embeddings.sentence_transformer import SentenceTransformerEmbeddi
 import uuid
 from tqdm import tqdm
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 ## PARAMETERS
 #################################
@@ -17,10 +20,6 @@ EMBEDDING_MODEL_NAME = (
     "sentence-transformers/LaBSE"  # agnostic to the language of the text
 )
 COLLECTION_NAME = "penalcode"
-
-# this is so when dockerizing the app, our labse for embeddings model goes to the cache folder set up by us
-# if not, the folder would be found outside the app directory and our app wouldn't have permission privileges
-os.environ["SENTENCE_TRANSFORMERS_HOME"] = "/usr/app/.cache"
 
 #################################
 
