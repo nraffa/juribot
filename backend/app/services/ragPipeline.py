@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain.schema import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
+from langchain_core.runnables import RunnableParallel
 from services.utils.dbInitializer import vectorStoreInitializer
 import os
 
@@ -10,11 +11,11 @@ load_dotenv()
 ## PARAMETERS
 ############################################
 
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
+CHROMAHOST = os.getenv("CHROMAHOST")
 
 ############################################
 
-CHROMADATABASE = vectorStoreInitializer("chroma-db", 8000)  # chroma-db
+CHROMADATABASE = vectorStoreInitializer(CHROMAHOST, 8000)
 
 chat_history = []
 

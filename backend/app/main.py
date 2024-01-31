@@ -3,8 +3,18 @@ from fastapi.responses import StreamingResponse
 from services.utils.dbLoaderHelper import vectorStoreLoader
 from models.chatModels import chainThread, ChainRequest
 from fastapi.middleware.cors import CORSMiddleware
-from services.ragPipeline import ragChainInitializer
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+
+# PARAMETERS
+############################################
+
+CHROMAHOST = os.getenv("CHROMAHOST")
+
+############################################
 
 chromaDatabase = None  # define as a global variable, possible issue if multiple processes try to use it at the same time
 
@@ -42,7 +52,7 @@ async def _upload(file: UploadFile):
         f.write(await file.read())
 
     try:
-        chromaDatabase = vectorStoreLoader("chroma-db", 8000, path=file.filename)
+        chromaDatabase = vectorStoreLoader(CHROMAHOST, 8000, path=file.filename)
 
         return {"message": "Successfully uploaded the document to the database."}
     except Exception as e:

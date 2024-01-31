@@ -10,10 +10,6 @@ from services.utils.dbLoaderHelper import EMBEDDING_MODEL_NAME, COLLECTION_NAME
 import uuid
 from tqdm import tqdm
 
-import os
-
-os.environ["HF_HOME"] = "/app/.cache/"
-
 
 # function for processing and loading the chunks into the chroma db for the first time
 def vectorStoreLoader(host: str, port: int, directory: bool = False):
