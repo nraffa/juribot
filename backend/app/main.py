@@ -57,3 +57,10 @@ async def _upload(file: UploadFile):
         return {"message": "Successfully uploaded the document to the database."}
     except Exception as e:
         return {"error": str(e)}
+
+
+@app.post("/delete-chat-history")
+def _delete_chat_history():
+    global chat_history
+    chat_history = []
+    return {"message": "Successfully deleted chat history."}
