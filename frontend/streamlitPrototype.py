@@ -8,6 +8,11 @@ from utils.pdfViewer import tmpFileCreator, showPdf
 import yaml
 from yaml.loader import SafeLoader
 
+USERNAMES = ["nraffa", "hbellu"]
+MAX_MESSAGES = 2
+
+counter = st.session_state.get("counter", 0)
+
 load_dotenv()
 
 url = os.getenv("API_URL")
@@ -76,6 +81,7 @@ if st.session_state["authentication_status"]:
             st.session_state.messages = []
             # post request to delete-chat-history endpoint so that it gets deleted from the backend
             requests.post(url + "/delete-chat-history")
+            counter = 0
 
     # Initialize chat history
     if "messages" not in st.session_state:
@@ -86,7 +92,7 @@ if st.session_state["authentication_status"]:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    if prompt := st.chat_input("What is up?"):
+    if prompt := st.chat_input("What is up?", max_chars=500):
         st.session_state.messages.append({"role": "user", "content": prompt})
 
         with st.chat_message("user"):
@@ -100,28 +106,38 @@ if st.session_state["authentication_status"]:
         full_response = ""
 
         with st.chat_message("assistant"):
-            message_placeholder = st.empty()
-            with requests.post(
-                url + "/chain",
-                json=data,
-                stream=True,
-            ) as response:
-                incomplete_chunk = b""
-                for chunk in response.iter_content():
-                    try:
-                        line = (incomplete_chunk + chunk).decode("utf-8")
-                        incomplete_chunk = b""
-                    except UnicodeDecodeError:
-                        incomplete_chunk += chunk
-                        continue
+            if st.session_state["username"] in USERNAMES or (
+                st.session_state["username"] not in USERNAMES and counter < MAX_MESSAGES
+            ):
+                counter += 1
+                st.session_state["counter"] = counter
+                message_placeholder = st.empty()
+                with requests.post(
+                    url + "/chain",
+                    json=data,
+                    stream=True,
+                ) as response:
+                    incomplete_chunk = b""
+                    for chunk in response.iter_content():
+                        try:
+                            line = (incomplete_chunk + chunk).decode("utf-8")
+                            incomplete_chunk = b""
+                        except UnicodeDecodeError:
+                            incomplete_chunk += chunk
+                            continue
 
-                    full_response += line
+                        full_response += line
 
-                    message_placeholder.markdown(full_response)
+                        message_placeholder.markdown(full_response)
+            elif (
+                counter >= MAX_MESSAGES
+                and st.session_state["username"] not in USERNAMES
+            ):
+                st.markdown("You have reached the maximum number of messages")
 
-        st.session_state.messages.append(
-            {"role": "assistant", "content": full_response}
-        )
+            st.session_state.messages.append(
+                {"role": "assistant", "content": full_response}
+            )
 
 # if user is not authenticated, show error
 elif st.session_state["authentication_status"] is False:
